@@ -1,14 +1,23 @@
+require 'optparse'
 require 'bundler'
 Bundler.require
 
 class Base
 
   def initialize
-    user_id = ARGV[0]
-    @client = Qiita::Client.new(access_token: '0ca76599346a8df81e5ecf3835a7c794a91d0aa0')
+
+    @args = {}
+    OptionParser.new do |parser|
+      parser.on('-u', '--user', 'ユーザー指定') {|v| @args[:user_id] = v}
+      parser.on('-t', '--text ', '投稿内容のテキスト') {|v| @args[:text] = v}
+      parser.parse!(ARGV)
+    end 
+
+    # @client = Qiita::Client.new(access_token: 'cc6ccacf7a0ceaf6905eea580a1745bae1b457fd')
+    @client = Qiita::Client.new(access_token: 'b71f8014e6a684bfa0ef4bc33a0e4dce0fad6e4d', host: 'qiitahackathon07.qiita.com')
     # ユーザーオブジェクト
-    if user_id
-      res_user = @client.get_user(user_id)
+    if @args[:user_id]
+      res_user = @client.get_user(@args[:user_id])
     else
       res_user = @client.get_authenticated_user
     end

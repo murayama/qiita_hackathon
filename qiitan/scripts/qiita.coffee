@@ -42,32 +42,44 @@ module.exports = (robot) ->
   robot.respond /qiita (.*)/i, (msg) ->
     msg.send "少々お待ち下さい..."
     cmd = msg.match[1]
+    username = msg.message.user.name
 
     # 実行するrubyファイルを指定して下さい。
-    exec_cmd = (ruby_file) ->
-      child_process.exec ruby_cmd + ruby_file , (error, stdout, stderr) ->
+    exec_cmd = (ruby_file, option) ->
+      child_process.exec ruby_cmd + ruby_file + ' ' + option , (error, stdout, stderr) ->
         if !error
           msg.send stdout
         else
           msg.send error
 
     kobito_start = ->
-      username = msg.message.user.name
       buffer_flg[username] = true
-      console.log buffer_flg
 
     kobito_end = ->
-      username = msg.message.user.name
       buffer_flg[username] = false
+
+    kobito_clear = ->
+      buffer_flg[username] = false
+      buffer[username] = null
+
+    kobito_buffer = ->
+      msg.send buffer[username].join("\n")
+
+    kobito_post = ->
+      buffer[username].shift()
+      text = buffer[username].join("\\\\n")
+      exec_cmd("create_item.rb", "-t #{text}")
+      kobito_clear()
 
 
     # Hubot qiita cmd
-    console.log cmd
     switch cmd
       when "相思相愛" then exec_cmd("lovers.rb")
       when "kobito_start"  then kobito_start()
       when "kobito_end"    then kobito_end()
-      when ""       then
+      when "kobito_clear"  then kobito_clear()
+      when "kobito_buffer" then kobito_buffer()
+      when "kobito_post"   then kobito_post()
       else msg.send "command nothing"
 
   robot.hear /(.*)/, (msg) ->
@@ -80,5 +92,4 @@ module.exports = (robot) ->
 
       buffer[username].push msg.message.text
 
-    console.log buffer
 
