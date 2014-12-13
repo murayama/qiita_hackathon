@@ -24,4 +24,4 @@ class CreateItem < Base
 end
 
 res =  CreateItem.new.execute
-puts res['url']
+puts res.body['url']
