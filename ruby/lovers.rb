@@ -8,12 +8,18 @@ class Lovers < Base
     res_followers = @client.list_user_followers(@current_user['id'], page: 1, per_page: 100).body.map{|u| u['id']}
     # ユーザーがフォローしている
     res_followees = @client.list_user_followees(@current_user['id'], page: 1, per_page: 100).body.map{|u| u['id']}
-    res_followers & res_followees
+    _lovers = res_followers & res_followees
+
+    if _lovers.empty?
+      "(ohmy) no lovers"
+    else
+      msg = []
+      _lovers.each do |user|
+        msg <<  "I (heart) #{user}"
+      end
+      msg.join("\n")
+    end
   end
 end
 
-lovers =  Lovers.new.execute
-p "(ohmy) no lovers" if lovers.empty?
-lovers.each do |user|
-  puts "I (heart) #{user}"
-end
+puts Lovers.new.execute
