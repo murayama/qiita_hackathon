@@ -4,13 +4,18 @@ Bundler.require
 class Base
 
   def initialize
+    user_id = ARGV[0]
     @client = Qiita::Client.new(access_token: '0ca76599346a8df81e5ecf3835a7c794a91d0aa0')
     # ユーザーオブジェクト
-    res_user = @client.get_authenticated_user
-    @current_user  = res_user.body
+    if user_id
+      res_user = @client.get_user(user_id)
+    else
+      res_user = @client.get_authenticated_user
+    end
+    @current_user = res_user.body
   end
-
 end
+
 #
 #
 # p client
