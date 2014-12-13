@@ -1,4 +1,4 @@
-require './qiita'
+require File.join(File.expand_path('../', __FILE__), 'qiita')
 
 class Lovers < Base
 
@@ -17,4 +17,8 @@ class Lovers < Base
   end
 end
 
-p Lovers.new.execute
+lovers =  Lovers.new.execute
+p "(ohmy) no lovers" if lovers.empty?
+lovers.each do |user|
+  puts "I (heart) #{user['id']}"
+end
