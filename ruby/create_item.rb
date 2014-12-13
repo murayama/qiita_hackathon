@@ -23,4 +23,5 @@ class CreateItem < Base
   end
 end
 
-puts CreateItem.new.execute
+res =  CreateItem.new.execute
+puts res['url']
