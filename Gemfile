@@ -4,4 +4,4 @@ source "https://rubygems.org"
 # gem "rails"
 gem 'qiita'
 
-gem 'gruff'
+# gem 'gruff'
